@@ -1,4 +1,5 @@
 # tifffile.py
+print("my debug ver 1.0")
 
 # Copyright (c) 2008-2022, Christoph Gohlke
 # All rights reserved.
@@ -6417,6 +6418,10 @@ class TiffPage:
         stdepth, stlength, stwidth, samples = stshape
         imdepth, imlength, imwidth, samples = self.shaped[1:]
 
+        #jim todo: workround for the tiff conversion issue:
+        print("imdepth, imlength, imwidth, samples--->", imdepth, imlength, imwidth, samples)
+        # samples=1
+
         if self.is_tiled:
 
             width = (imwidth + stwidth - 1) // stwidth
@@ -6516,7 +6521,14 @@ class TiffPage:
                     data.shape = shape
                 else:
                     # should not happen, but try different length
-                    data.shape = shape[0], -1, shape[2], shape[3]
+
+                    try:
+                        data.shape = shape[0], -1, shape[2], shape[3]
+                    except ValueError:
+                        data.shape = shape[0], -1, shape[2], 1
+                    except:
+                        print("Something else went wrong")
+                        
                     # raise RuntimeError(
                     #     f'invalid strip shape {data.shape} or size {size}'
                     # )
